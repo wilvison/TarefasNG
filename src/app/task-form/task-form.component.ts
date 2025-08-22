@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { TaskService } from '../task.service';
+import { scaleInOut, fadeInOut, slideUpDown } from '../animations';
 
 @Component({
   selector: 'app-task-form',
   templateUrl: './task-form.component.html',
-  styleUrls: ['./task-form.component.css']
+  styleUrls: ['./task-form.component.css'],
+  animations: [scaleInOut, fadeInOut, slideUpDown]
 })
 export class TaskFormComponent {
   @Output() taskCreated = new EventEmitter<void>();

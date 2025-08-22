@@ -1,6 +1,6 @@
 <div class="task-manager">
   <!-- Progress Stats -->
-  <div class="stats-card">
+  <div class="stats-card" [@scaleInOut]>
     <h3>Progresso das Tarefas</h3>
     <div class="progress-info">
       <div class="progress-bar">
@@ -13,7 +13,7 @@
   </div>
 
   <!-- Add New Task -->
-  <div class="add-task-card">
+  <div class="add-task-card" [@fadeInOut]>
     <h3>Adicionar Nova Tarefa</h3>
     <form (ngSubmit)="addTask()" #taskForm="ngForm">
       <div class="form-group">
@@ -46,7 +46,7 @@
   </div>
 
   <!-- Filter Options -->
-  <div class="filter-card">
+  <div class="filter-card" [@fadeInOut]>
     <label class="filter-label">
       <input 
         type="checkbox" 
@@ -57,7 +57,7 @@
   </div>
 
   <!-- Tasks List -->
-  <div class="tasks-container">
+  <div class="tasks-container" [@fadeInOut]>
     <h3>Suas Tarefas</h3>
     
     <div *ngIf="getFilteredTasks().length === 0" class="no-tasks">
@@ -69,29 +69,31 @@
       </p>
     </div>
 
-    <div *ngFor="let task of getFilteredTasks()" class="task-item" [class.completed]="task.completed">
-      <div class="task-content">
-        <div class="task-header">
-          <label class="task-checkbox">
-            <input 
-              type="checkbox" 
-              [checked]="task.completed"
-              (change)="toggleTask(task.id)">
-            <span class="checkmark"></span>
-          </label>
-          <h4 class="task-title" [class.strikethrough]="task.completed">{{ task.title }}</h4>
-          <button class="btn btn-danger btn-small" (click)="deleteTask(task.id)" title="Excluir tarefa">
-            🗑️
-          </button>
-        </div>
-        
-        <p *ngIf="task.description" class="task-description" [class.strikethrough]="task.completed">
-          {{ task.description }}
-        </p>
-        
-        <div class="task-meta">
-          <small class="task-date">Criada em: {{ task.createdAt | date:'dd/MM/yyyy HH:mm' }}</small>
-          <span *ngIf="task.completed" class="task-status completed-badge">✅ Concluída</span>
+    <div [@listAnimation]="getFilteredTasks().length">
+      <div *ngFor="let task of getFilteredTasks()" class="task-item" [class.completed]="task.completed" [@fadeInOut]>
+        <div class="task-content">
+          <div class="task-header">
+            <label class="task-checkbox">
+              <input 
+                type="checkbox" 
+                [checked]="task.completed"
+                (change)="toggleTask(task.id)">
+              <span class="checkmark"></span>
+            </label>
+            <h4 class="task-title" [class.strikethrough]="task.completed">{{ task.title }}</h4>
+            <button class="btn btn-danger btn-small" (click)="deleteTask(task.id)" title="Excluir tarefa">
+              🗑️
+            </button>
+          </div>
+          
+          <p *ngIf="task.description" class="task-description" [class.strikethrough]="task.completed">
+            {{ task.description }}
+          </p>
+          
+          <div class="task-meta">
+            <small class="task-date">Criada em: {{ task.createdAt | date:'dd/MM/yyyy HH:mm' }}</small>
+            <span *ngIf="task.completed" class="task-status completed-badge">✅ Concluída</span>
+          </div>
         </div>
       </div>
     </div>
