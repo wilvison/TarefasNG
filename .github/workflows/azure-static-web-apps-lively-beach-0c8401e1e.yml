@@ -19,19 +19,23 @@ jobs:
         with:
           submodules: true
           lfs: false
+
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_LIVELY_BEACH_0C8401E1E }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/" # App source code path
-          api_location: "" # Api source code path - optional
-          output_location: "" # Built app content directory - optional
-          ###### End of Repository/Build Configurations ######
+
+          # Ajuste estes valores para o seu projeto Angular:
+          # - app_location deve apontar para a pasta que contém package.json/angular.json
+          # - app_build_command compila o app
+          # - output_location deve apontar para a pasta final do build que contém index.html
+          app_location: "<caminho-do-app>"              # ex.: "frontend", "apps/web", etc.
+          app_build_command: "npm ci && npm run build"  # ajuste se usa outro script de build
+          output_location: "dist/<nome-do-app>/browser" # Angular 15+ geralmente usa /browser
+          # Se seu Angular gera em dist/<nome-do-app> (sem /browser), ajuste para isso.
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
