@@ -58,6 +58,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "buildTarget": "tarefas-ng:build"
+          },
           "configurations": {
             "production": {
               "buildTarget": "tarefas-ng:build:production"
