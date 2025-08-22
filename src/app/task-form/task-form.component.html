@@ -1,9 +1,9 @@
-<div class="task-form-container">
+<div class="task-form-container" [@scaleInOut]>
   <h3>✨ Criar Nova Tarefa</h3>
   
   <form (ngSubmit)="onSubmit()" #taskForm="ngForm" class="task-form">
     <!-- Basic Information -->
-    <div class="form-section">
+    <div class="form-section" [@fadeInOut]>
       <h4>Informações Básicas</h4>
       
       <div class="form-group">

@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../task.service';
 import { Task, EisenhowerQuadrant, QuadrantInfo, TaskStatus } from '../task.model';
+import { listAnimation, fadeInOut, scaleInOut, bounceIn } from '../animations';
 
 @Component({
   selector: 'app-eisenhower-matrix',
   templateUrl: './eisenhower-matrix.component.html',
-  styleUrls: ['./eisenhower-matrix.component.css']
+  styleUrls: ['./eisenhower-matrix.component.css'],
+  animations: [listAnimation, fadeInOut, scaleInOut, bounceIn]
 })
 export class EisenhowerMatrixComponent implements OnInit {
   quadrants: QuadrantInfo[] = [];

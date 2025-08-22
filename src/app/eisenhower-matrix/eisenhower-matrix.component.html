@@ -1,12 +1,12 @@
 <div class="eisenhower-matrix">
-  <div class="matrix-header">
+  <div class="matrix-header" [@bounceIn]>
     <h2>Matriz de Eisenhower</h2>
     <p class="matrix-description">
       Organize suas tarefas por urgência e importância para uma melhor produtividade
     </p>
   </div>
 
-  <div class="matrix-axes">
+  <div class="matrix-axes" [@fadeInOut]>
     <div class="axis-label axis-vertical">
       <span>IMPORTANTE</span>
     </div>
@@ -15,12 +15,13 @@
     </div>
   </div>
 
-  <div class="matrix-grid">
+  <div class="matrix-grid" [@listAnimation]="quadrants.length">
     <div 
       *ngFor="let quadrant of quadrants" 
       [class]="getQuadrantClass(quadrant.key)"
       (dragover)="onDragOver($event)"
-      (drop)="onDrop($event, quadrant.key)">
+      (drop)="onDrop($event, quadrant.key)"
+      [@scaleInOut]>
       
       <div class="quadrant-header">
         <div class="quadrant-icon">{{ quadrant.icon }}</div>
@@ -33,13 +34,14 @@
         </div>
       </div>
 
-      <div class="quadrant-tasks">
+      <div class="quadrant-tasks" [@listAnimation]="getTasksForQuadrant(quadrant.key).length">
         <div 
           *ngFor="let task of getTasksForQuadrant(quadrant.key)" 
           class="matrix-task"
           draggable="true"
           (dragstart)="onDragStart($event, task)"
-          (dragend)="onDragEnd()">
+          (dragend)="onDragEnd()"
+          [@fadeInOut]>
           
           <div class="task-header">
             <label class="task-checkbox">
@@ -90,7 +92,7 @@
     </div>
   </div>
 
-  <div class="matrix-instructions">
+  <div class="matrix-instructions" [@fadeInOut]>
     <h3>Como usar a Matriz de Eisenhower:</h3>
     <ul>
       <li><strong>Q1 (Fazer):</strong> Tarefas urgentes e importantes - faça imediatamente</li>

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { routeSlideAnimation, fadeInOut } from './animations';
 
 @Component({
   selector: 'app-root',
@@ -38,24 +39,24 @@ import { Component } from '@angular/core';
         </div>
       </header>
       
-      <main class="app-main">
+      <main class="app-main" [@routeSlideAnimation]="currentView">
         <!-- Matrix View -->
-        <div *ngIf="currentView === 'matrix'">
+        <div *ngIf="currentView === 'matrix'" [@fadeInOut]>
           <app-eisenhower-matrix></app-eisenhower-matrix>
         </div>
         
         <!-- Create Task View -->
-        <div *ngIf="currentView === 'create'">
+        <div *ngIf="currentView === 'create'" [@fadeInOut]>
           <app-task-form (taskCreated)="onTaskCreated()"></app-task-form>
         </div>
         
         <!-- Traditional List View -->
-        <div *ngIf="currentView === 'list'">
+        <div *ngIf="currentView === 'list'" [@fadeInOut]>
           <app-task-list></app-task-list>
         </div>
         
         <!-- SaaS Features View -->
-        <div *ngIf="currentView === 'saas'">
+        <div *ngIf="currentView === 'saas'" [@fadeInOut]>
           <app-saas-features></app-saas-features>
         </div>
       </main>
@@ -66,7 +67,8 @@ import { Component } from '@angular/core';
       </footer>
     </div>
   `,
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  animations: [routeSlideAnimation, fadeInOut]
 })
 export class AppComponent {
   title = 'TarefasNG';

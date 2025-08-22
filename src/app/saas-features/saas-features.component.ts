@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { fadeInOut, scaleInOut, listAnimation } from '../animations';
 
 interface SubscriptionPlan {
   name: string;
@@ -23,7 +24,8 @@ interface Organization {
 @Component({
   selector: 'app-saas-features',
   templateUrl: './saas-features.component.html',
-  styleUrls: ['./saas-features.component.css']
+  styleUrls: ['./saas-features.component.css'],
+  animations: [fadeInOut, scaleInOut, listAnimation]
 })
 export class SaasFeaturesComponent {
   currentView: 'plans' | 'organization' | 'settings' = 'plans';

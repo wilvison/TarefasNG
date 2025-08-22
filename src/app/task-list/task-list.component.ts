@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../task.service';
 import { Task } from '../task.model';
+import { listAnimation, fadeInOut, scaleInOut } from '../animations';
 
 @Component({
   selector: 'app-task-list',
   templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.css']
+  styleUrls: ['./task-list.component.css'],
+  animations: [listAnimation, fadeInOut, scaleInOut]
 })
 export class TaskListComponent implements OnInit {
   tasks: Task[] = [];
