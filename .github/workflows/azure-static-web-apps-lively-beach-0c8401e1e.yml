@@ -33,9 +33,8 @@ jobs:
           # - app_build_command compila o app
           # - output_location aponta para a pasta final do build que contém index.html
           app_location: "."                             # projeto na raiz do repositório
-          app_build_command: "npm ci && npm run build"  # ajuste se usa outro script de build
-          output_location: "dist/tarefas-ng"           # saída padrão do Angular CLI
-          # Se seu Angular gera em dist/tarefas-ng/browser, ajuste para "dist/tarefas-ng/browser"
+          app_build_command: "npm ci && npm run build"  # comando de build do Angular
+          output_location: "dist/tarefas-ng/browser"    # saída do Angular 15+ com pasta browser
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
