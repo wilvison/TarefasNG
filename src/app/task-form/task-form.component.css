@@ -71,27 +71,121 @@
 
 .checkbox-label {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-start;
+  gap: 12px;
   cursor: pointer;
-  padding: 10px;
+  padding: 16px;
   border: 2px solid #e9ecef;
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  background: white;
 }
 
 .checkbox-label:hover {
   border-color: #3498db;
   background: #f8fafc;
+  transform: translateY(-1px);
 }
 
 .checkbox-label input[type="checkbox"] {
-  margin: 0;
+  display: none;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  border-color: #3498db;
+  transform: scale(1.1);
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+  content: '✓';
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  animation: checkPop 0.3s ease;
+}
+
+@keyframes checkPop {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* Enhanced checkbox for form */
+.enhanced-checkbox {
+  align-items: center;
+}
+
+.enhanced-checkbox .checkmark {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  background: white;
+  flex-shrink: 0;
+}
+
+.enhanced-checkbox .checkbox-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.enhanced-checkbox .checkbox-content strong {
+  color: #2c3e50;
+  font-size: 16px;
+}
+
+.enhanced-checkbox .checkbox-content small {
+  color: #6c757d;
+  font-size: 14px;
 }
 
 .form-range {
   width: 100%;
   margin: 10px 0;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: #e9ecef;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.form-range::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+.form-range::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.enhanced-range:focus {
+  background: linear-gradient(to right, #3498db 0%, #3498db calc(var(--value, 50) * 1%), #e9ecef calc(var(--value, 50) * 1%), #e9ecef 100%);
 }
 
 .range-labels {
@@ -109,12 +203,102 @@
 
 .quadrant-preview,
 .priority-preview {
-  background: #e8f4fd;
-  border: 1px solid #bee5eb;
-  border-radius: 6px;
-  padding: 10px;
-  margin-top: 10px;
-  color: #0c5460;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #3498db;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+  color: #2d3748;
+  transition: all 0.3s ease;
+}
+
+.quadrant-preview:hover,
+.priority-preview:hover {
+  background: #eef2ff;
+  border-left-color: #2980b9;
+}
+
+.priority-preview .priority-score {
+  display: inline-block;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-weight: bold;
+  margin-left: 8px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.priority-preview .priority-score.high-priority {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  animation: pulse 2s infinite;
+}
+
+/* Form validation styles */
+.form-error {
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.form-error::before {
+  content: '⚠️';
+  font-size: 0.75rem;
+}
+
+/* Enhanced form help text */
+.form-help {
+  display: block;
+  color: #64748b;
+  font-size: 0.8rem;
+  margin-top: 6px;
+  font-style: italic;
+}
+
+/* Floating label enhancements */
+.floating-label {
+  position: relative;
+  margin-bottom: 28px;
+}
+
+.floating-label input {
+  padding-top: 20px;
+  padding-bottom: 8px;
+}
+
+.floating-label label {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  color: #6c757d;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.floating-label input:focus + label,
+.floating-label input:not(:placeholder-shown) + label {
+  top: 4px;
+  left: 12px;
+  font-size: 12px;
+  color: #3498db;
+  background: white;
+  padding: 0 4px;
+  font-weight: 600;
+}
+
+.floating-label input.is-invalid + label {
+  color: #e74c3c;
+}
+
+.floating-label input.is-valid + label {
+  color: #27ae60;
 }
 
 .form-help {

@@ -1,4 +1,4 @@
-<div class="eisenhower-matrix">
+<div class="eisenhower-matrix" role="main" aria-label="Matriz de Eisenhower">
   <div class="matrix-header">
     <h2>Matriz de Eisenhower</h2>
     <p class="matrix-description">
@@ -6,7 +6,33 @@
     </p>
   </div>
 
-  <div class="matrix-axes">
+  <!-- Success Message -->
+  <div *ngIf="showSuccessMessage" class="toast success animate-in" role="alert" aria-live="polite">
+    <strong>✅ Sucesso!</strong> Operação realizada com êxito.
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="matrix-loading" aria-label="Carregando tarefas">
+    <div class="matrix-grid">
+      <div *ngFor="let quadrant of quadrants" class="matrix-quadrant skeleton-card">
+        <div class="quadrant-header">
+          <div class="quadrant-icon">{{ quadrant.icon }}</div>
+          <div class="quadrant-info">
+            <h3 class="quadrant-title">{{ quadrant.title }}</h3>
+            <p class="quadrant-description">{{ quadrant.description }}</p>
+          </div>
+          <div class="loading-spinner"></div>
+        </div>
+        <div class="quadrant-tasks">
+          <div class="skeleton skeleton-text"></div>
+          <div class="skeleton skeleton-text"></div>
+          <div class="skeleton skeleton-title"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="matrix-axes" *ngIf="!isLoading">
     <div class="axis-label axis-vertical">
       <span>IMPORTANTE</span>
     </div>
@@ -15,43 +41,58 @@
     </div>
   </div>
 
-  <div class="matrix-grid">
+  <div class="matrix-grid animate-in" *ngIf="!isLoading">
     <div 
       *ngFor="let quadrant of quadrants" 
       [class]="getQuadrantClass(quadrant.key)"
+      [attr.aria-label]="getQuadrantAriaLabel(quadrant)"
+      [attr.data-quadrant]="quadrant.key"
+      role="region"
+      tabindex="0"
       (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
       (drop)="onDrop($event, quadrant.key)">
       
       <div class="quadrant-header">
-        <div class="quadrant-icon">{{ quadrant.icon }}</div>
+        <div class="quadrant-icon" aria-hidden="true">{{ quadrant.icon }}</div>
         <div class="quadrant-info">
           <h3 class="quadrant-title">{{ quadrant.title }}</h3>
           <p class="quadrant-description">{{ quadrant.description }}</p>
         </div>
-        <div class="task-count">
+        <div class="task-count" 
+             [attr.aria-label]="getTasksForQuadrant(quadrant.key).length + ' tarefas neste quadrante'">
           {{ getTasksForQuadrant(quadrant.key).length }}
         </div>
       </div>
 
-      <div class="quadrant-tasks">
+      <div class="quadrant-tasks" role="list">
         <div 
-          *ngFor="let task of getTasksForQuadrant(quadrant.key)" 
-          class="matrix-task"
+          *ngFor="let task of getTasksForQuadrant(quadrant.key); trackBy: trackByTaskId" 
+          class="matrix-task slide-in"
+          role="listitem"
+          [attr.aria-label]="getTaskAriaLabel(task)"
           draggable="true"
+          tabindex="0"
+          [attr.aria-grabbed]="draggedTask?.id === task.id"
           (dragstart)="onDragStart($event, task)"
-          (dragend)="onDragEnd()">
+          (dragend)="onDragEnd()"
+          (keydown)="onTaskKeydown($event, task)">
           
           <div class="task-header">
-            <label class="task-checkbox">
+            <label class="task-checkbox" 
+                   [attr.aria-label]="'Marcar tarefa ' + task.title + ' como ' + (task.completed ? 'pendente' : 'concluída')">
               <input 
                 type="checkbox" 
                 [checked]="task.completed"
-                (change)="toggleTask(task.id)">
-              <span class="checkmark"></span>
+                [id]="'task-' + task.id"
+                (change)="toggleTask(task.id)"
+                [attr.aria-describedby]="'task-desc-' + task.id">
+              <span class="checkmark" aria-hidden="true"></span>
             </label>
-            <h4 class="task-title">{{ task.title }}</h4>
+            <h4 class="task-title" [id]="'task-desc-' + task.id">{{ task.title }}</h4>
             <button 
               class="btn-delete" 
+              [attr.aria-label]="'Excluir tarefa ' + task.title"
               (click)="deleteTask(task.id)"
               title="Excluir tarefa">
               🗑️
@@ -63,40 +104,56 @@
           </p>
           
           <div class="task-meta">
-            <span class="priority-badge" [attr.data-priority]="getPriorityLabel(task.priority_score)">
+            <span class="priority-badge" 
+                  [attr.data-priority]="getPriorityLabel(task.priority_score)"
+                  [attr.aria-label]="'Prioridade: ' + getPriorityLabel(task.priority_score)">
               Prioridade: {{ getPriorityLabel(task.priority_score) }}
             </span>
-            <span *ngIf="task.due_date" class="due-date">
+            <span *ngIf="task.due_date" 
+                  class="due-date"
+                  [attr.aria-label]="'Vencimento: ' + formatDueDate(task.due_date)">
               📅 {{ formatDueDate(task.due_date) }}
             </span>
           </div>
           
-          <div *ngIf="task.labels.length > 0" class="task-labels">
-            <span *ngFor="let label of task.labels" class="task-label">
+          <div *ngIf="task.labels.length > 0" class="task-labels" role="list" aria-label="Tags da tarefa">
+            <span *ngFor="let label of task.labels" 
+                  class="task-label" 
+                  role="listitem"
+                  [attr.aria-label]="'Tag: ' + label">
               {{ label }}
             </span>
           </div>
           
-          <div class="task-scores">
-            <span class="score-item">💪 Esforço: {{ task.effort_estimate }}/5</span>
-            <span class="score-item">🎯 Impacto: {{ task.impact_score }}/5</span>
+          <div class="task-scores" aria-label="Métricas da tarefa">
+            <span class="score-item" [attr.aria-label]="'Esforço estimado: ' + task.effort_estimate + ' de 5'">
+              💪 Esforço: {{ task.effort_estimate }}/5
+            </span>
+            <span class="score-item" [attr.aria-label]="'Impacto esperado: ' + task.impact_score + ' de 5'">
+              🎯 Impacto: {{ task.impact_score }}/5
+            </span>
           </div>
         </div>
 
-        <div *ngIf="getTasksForQuadrant(quadrant.key).length === 0" class="empty-quadrant">
-          <p>Arraste tarefas para este quadrante</p>
+        <div *ngIf="getTasksForQuadrant(quadrant.key).length === 0" 
+             class="empty-state"
+             role="status"
+             aria-label="Nenhuma tarefa neste quadrante">
+          <div class="empty-state-icon" aria-hidden="true">📝</div>
+          <h3>Nenhuma tarefa aqui</h3>
+          <p>Arraste tarefas para este quadrante ou crie uma nova tarefa</p>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="matrix-instructions">
-    <h3>Como usar a Matriz de Eisenhower:</h3>
-    <ul>
-      <li><strong>Q1 (Fazer):</strong> Tarefas urgentes e importantes - faça imediatamente</li>
-      <li><strong>Q2 (Planejar):</strong> Tarefas importantes mas não urgentes - agende para fazer</li>
-      <li><strong>Q3 (Delegar):</strong> Tarefas urgentes mas não importantes - delegue se possível</li>
-      <li><strong>Q4 (Eliminar):</strong> Tarefas nem urgentes nem importantes - considere eliminar</li>
+  <div class="matrix-instructions" *ngIf="!isLoading" role="region" aria-labelledby="instructions-title">
+    <h3 id="instructions-title">Como usar a Matriz de Eisenhower:</h3>
+    <ul role="list">
+      <li role="listitem"><strong>Q1 (Fazer):</strong> Tarefas urgentes e importantes - faça imediatamente</li>
+      <li role="listitem"><strong>Q2 (Planejar):</strong> Tarefas importantes mas não urgentes - agende para fazer</li>
+      <li role="listitem"><strong>Q3 (Delegar):</strong> Tarefas urgentes mas não importantes - delegue se possível</li>
+      <li role="listitem"><strong>Q4 (Eliminar):</strong> Tarefas nem urgentes nem importantes - considere eliminar</li>
     </ul>
     <p><em>💡 Dica: Arraste as tarefas entre os quadrantes para reorganizá-las!</em></p>
   </div>

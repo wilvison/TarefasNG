@@ -1,21 +1,35 @@
-<div class="task-form-container">
+<div class="task-form-container animate-in" role="main" aria-label="Formulário de criação de tarefas">
   <h3>✨ Criar Nova Tarefa</h3>
+  
+  <!-- Success Message -->
+  <div *ngIf="showSuccessMessage" class="toast success animate-in" role="alert" aria-live="polite">
+    <strong>✅ Sucesso!</strong> Tarefa criada com êxito.
+  </div>
   
   <form (ngSubmit)="onSubmit()" #taskForm="ngForm" class="task-form">
     <!-- Basic Information -->
     <div class="form-section">
       <h4>Informações Básicas</h4>
       
-      <div class="form-group">
-        <label for="title">Título da Tarefa *</label>
+      <div class="form-group floating-label">
         <input 
           type="text" 
           id="title"
-          class="form-control" 
+          [class]="getTitleFieldClass()"
           [(ngModel)]="title" 
           name="title"
-          placeholder="Ex: Revisar relatório trimestral"
+          placeholder=" "
+          (input)="onTitleInput()"
+          [attr.aria-describedby]="formErrors['title'] ? 'title-error' : null"
           required>
+        <label for="title">Título da Tarefa *</label>
+        <div *ngIf="formErrors['title']" 
+             class="form-error" 
+             id="title-error" 
+             role="alert"
+             aria-live="polite">
+          {{ formErrors['title'] }}
+        </div>
       </div>
       
       <div class="form-group">
@@ -26,7 +40,9 @@
           [(ngModel)]="description" 
           name="description"
           placeholder="Descreva os detalhes da tarefa..."
-          rows="3"></textarea>
+          rows="3"
+          [attr.aria-describedby]="'desc-help'"></textarea>
+        <small id="desc-help" class="form-help">Adicione mais contexto sobre a tarefa</small>
       </div>
     </div>
 
@@ -34,27 +50,38 @@
     <div class="form-section">
       <h4>🎯 Classificação da Matriz de Eisenhower</h4>
       
-      <div class="checkbox-group">
-        <label class="checkbox-label">
+      <div class="checkbox-group" role="group" aria-labelledby="classification-title">
+        <label class="checkbox-label enhanced-checkbox">
           <input 
             type="checkbox" 
             [(ngModel)]="is_urgent"
-            name="is_urgent">
-          <span class="checkmark"></span>
-          <strong>Urgente</strong> - Precisa ser feito rapidamente
+            name="is_urgent"
+            [attr.aria-describedby]="'urgent-help'">
+          <span class="checkmark" aria-hidden="true"></span>
+          <div class="checkbox-content">
+            <strong>Urgente</strong>
+            <small id="urgent-help">Precisa ser feito rapidamente</small>
+          </div>
         </label>
         
-        <label class="checkbox-label">
+        <label class="checkbox-label enhanced-checkbox">
           <input 
             type="checkbox" 
             [(ngModel)]="is_important"
-            name="is_important">
-          <span class="checkmark"></span>
-          <strong>Importante</strong> - Tem alto impacto nos seus objetivos
+            name="is_important"
+            [attr.aria-describedby]="'important-help'">
+          <span class="checkmark" aria-hidden="true"></span>
+          <div class="checkbox-content">
+            <strong>Importante</strong>
+            <small id="important-help">Tem alto impacto nos seus objetivos</small>
+          </div>
         </label>
       </div>
 
-      <div class="quadrant-preview">
+      <div class="quadrant-preview" 
+           [style.border-left-color]="getQuadrantColor()"
+           role="status"
+           aria-label="Quadrante previsto baseado na classificação">
         <strong>Quadrante previsto:</strong> {{ getQuadrantPreview() }}
       </div>
     </div>
@@ -69,9 +96,19 @@
           <input 
             type="datetime-local" 
             id="due_date"
-            class="form-control" 
+            [class]="getDueDateFieldClass()"
             [(ngModel)]="due_date" 
-            name="due_date">
+            name="due_date"
+            (change)="onDueDateChange()"
+            [attr.aria-describedby]="formErrors['due_date'] ? 'date-error' : 'date-help'">
+          <small id="date-help" class="form-help">Quando esta tarefa deve ser concluída?</small>
+          <div *ngIf="formErrors['due_date']" 
+               class="form-error" 
+               id="date-error" 
+               role="alert"
+               aria-live="polite">
+            {{ formErrors['due_date'] }}
+          </div>
         </div>
       </div>
 
@@ -81,17 +118,19 @@
           <input 
             type="range" 
             id="effort_estimate"
-            class="form-range" 
+            class="form-range enhanced-range" 
             [(ngModel)]="effort_estimate" 
             name="effort_estimate"
             min="1" 
             max="5"
-            step="1">
+            step="1"
+            [attr.aria-describedby]="'effort-help'">
           <div class="range-labels">
             <span>Muito Fácil (1)</span>
-            <span class="current-value">{{ effort_estimate }}</span>
+            <span class="current-value" aria-live="polite">{{ effort_estimate }}</span>
             <span>Muito Difícil (5)</span>
           </div>
+          <small id="effort-help" class="form-help">Quanta energia/tempo será necessário?</small>
         </div>
 
         <div class="form-group">
@@ -99,22 +138,29 @@
           <input 
             type="range" 
             id="impact_score"
-            class="form-range" 
+            class="form-range enhanced-range" 
             [(ngModel)]="impact_score" 
             name="impact_score"
             min="1" 
             max="5"
-            step="1">
+            step="1"
+            [attr.aria-describedby]="'impact-help'">
           <div class="range-labels">
             <span>Baixo Impacto (1)</span>
-            <span class="current-value">{{ impact_score }}</span>
+            <span class="current-value" aria-live="polite">{{ impact_score }}</span>
             <span>Alto Impacto (5)</span>
           </div>
+          <small id="impact-help" class="form-help">Qual o impacto nos seus objetivos?</small>
         </div>
       </div>
 
-      <div class="priority-preview">
-        <strong>Score de Prioridade Calculado:</strong> {{ getPriorityPreview() }}
+      <div class="priority-preview" 
+           role="status"
+           aria-label="Score de prioridade calculado">
+        <strong>Score de Prioridade Calculado:</strong> 
+        <span class="priority-score" [class.high-priority]="getPriorityPreview() >= 5">
+          {{ getPriorityPreview() }}
+        </span>
       </div>
     </div>
 
@@ -130,8 +176,9 @@
           class="form-control" 
           [(ngModel)]="labels" 
           name="labels"
-          placeholder="Ex: trabalho, urgente, cliente-abc">
-        <small class="form-help">Use vírgulas para separar múltiplas tags</small>
+          placeholder="Ex: trabalho, urgente, cliente-abc"
+          [attr.aria-describedby]="'labels-help'">
+        <small id="labels-help" class="form-help">Use vírgulas para separar múltiplas tags</small>
       </div>
     </div>
 
@@ -140,9 +187,12 @@
       <button 
         type="submit" 
         class="btn btn-primary btn-create"
-        [disabled]="!title.trim()">
-        <span class="btn-icon">➕</span>
-        Criar Tarefa
+        [class.loading]="isSubmitting"
+        [disabled]="!title.trim() || isSubmitting"
+        [attr.aria-label]="isSubmitting ? 'Criando tarefa...' : 'Criar nova tarefa'">
+        <span *ngIf="isSubmitting" class="loading-spinner" aria-hidden="true"></span>
+        <span class="btn-icon" *ngIf="!isSubmitting" aria-hidden="true">➕</span>
+        {{ isSubmitting ? 'Criando...' : 'Criar Tarefa' }}
       </button>
     </div>
   </form>
