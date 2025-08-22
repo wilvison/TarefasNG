@@ -28,6 +28,12 @@ import { Component } from '@angular/core';
               class="nav-btn">
               📝 Lista de Tarefas
             </button>
+            <button 
+              [class.active]="currentView === 'saas'"
+              (click)="setView('saas')"
+              class="nav-btn">
+              ⚙️ SaaS & Configurações
+            </button>
           </nav>
         </div>
       </header>
@@ -47,6 +53,11 @@ import { Component } from '@angular/core';
         <div *ngIf="currentView === 'list'">
           <app-task-list></app-task-list>
         </div>
+        
+        <!-- SaaS Features View -->
+        <div *ngIf="currentView === 'saas'">
+          <app-saas-features></app-saas-features>
+        </div>
       </main>
       
       <footer class="app-footer">
@@ -59,9 +70,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'TarefasNG';
-  currentView: 'matrix' | 'create' | 'list' = 'matrix';
+  currentView: 'matrix' | 'create' | 'list' | 'saas' = 'matrix';
 
-  setView(view: 'matrix' | 'create' | 'list'): void {
+  setView(view: 'matrix' | 'create' | 'list' | 'saas'): void {
     this.currentView = view;
   }
 
