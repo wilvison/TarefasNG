@@ -1,12 +1,21 @@
-<div class="task-manager">
+<div class="task-manager animate-in" role="main" aria-label="Gerenciador de tarefas em lista">
+  <!-- Success Message -->
+  <div *ngIf="showSuccessMessage" class="toast success animate-in" role="alert" aria-live="polite">
+    <strong>✅ Sucesso!</strong> Operação realizada com êxito.
+  </div>
+
   <!-- Progress Stats -->
   <div class="stats-card">
     <h3>Progresso das Tarefas</h3>
     <div class="progress-info">
-      <div class="progress-bar">
+      <div class="progress-bar" role="progressbar" 
+           [attr.aria-valuenow]="getCompletedPercentage()"
+           aria-valuemin="0" 
+           aria-valuemax="100"
+           [attr.aria-label]="getCompletedPercentage() + '% de tarefas concluídas'">
         <div class="progress-fill" [style.width.%]="getCompletedPercentage()"></div>
       </div>
-      <div class="progress-text">
+      <div class="progress-text" aria-live="polite">
         {{ getCompletedCount() }} de {{ getTotalCount() }} tarefas concluídas ({{ getCompletedPercentage() }}%)
       </div>
     </div>
@@ -16,16 +25,16 @@
   <div class="add-task-card">
     <h3>Adicionar Nova Tarefa</h3>
     <form (ngSubmit)="addTask()" #taskForm="ngForm">
-      <div class="form-group">
-        <label for="taskTitle">Título da Tarefa:</label>
+      <div class="form-group floating-label">
         <input 
           type="text" 
           id="taskTitle"
           class="form-control" 
           [(ngModel)]="newTaskTitle" 
           name="taskTitle"
-          placeholder="Digite o título da tarefa..."
+          placeholder=" "
           required>
+        <label for="taskTitle">Título da Tarefa</label>
       </div>
       
       <div class="form-group">
@@ -39,28 +48,52 @@
           rows="3"></textarea>
       </div>
       
-      <button type="submit" class="btn btn-primary" [disabled]="!newTaskTitle.trim()">
-        ➕ Adicionar Tarefa
+      <button type="submit" 
+              class="btn btn-primary mobile-friendly-btn"
+              [class.loading]="isSubmitting"
+              [disabled]="!newTaskTitle.trim() || isSubmitting"
+              [attr.aria-label]="isSubmitting ? 'Adicionando tarefa...' : 'Adicionar nova tarefa'">
+        <span *ngIf="isSubmitting" class="loading-spinner" aria-hidden="true"></span>
+        <span *ngIf="!isSubmitting" aria-hidden="true">➕</span>
+        {{ isSubmitting ? 'Adicionando...' : 'Adicionar Tarefa' }}
       </button>
     </form>
   </div>
 
   <!-- Filter Options -->
   <div class="filter-card">
-    <label class="filter-label">
+    <label class="filter-label enhanced-filter">
       <input 
         type="checkbox" 
         [(ngModel)]="showCompleted"
         name="showCompleted">
-      Mostrar tarefas concluídas
+      <span class="checkmark" aria-hidden="true"></span>
+      <span>Mostrar tarefas concluídas</span>
     </label>
   </div>
 
-  <!-- Tasks List -->
-  <div class="tasks-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="tasks-container" aria-label="Carregando tarefas">
     <h3>Suas Tarefas</h3>
+    <div class="task-item skeleton-task" *ngFor="let i of [1,2,3]">
+      <div class="task-content">
+        <div class="task-header">
+          <div class="skeleton skeleton-checkbox"></div>
+          <div class="skeleton skeleton-title"></div>
+        </div>
+        <div class="skeleton skeleton-text"></div>
+        <div class="skeleton skeleton-text"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tasks List -->
+  <div class="tasks-container" *ngIf="!isLoading">
+    <h3>Suas Tarefas <span class="task-count-badge">{{ getFilteredTasks().length }}</span></h3>
     
-    <div *ngIf="getFilteredTasks().length === 0" class="no-tasks">
+    <div *ngIf="getFilteredTasks().length === 0" class="empty-state" role="status">
+      <div class="empty-state-icon" aria-hidden="true">📝</div>
+      <h4>Nenhuma tarefa encontrada</h4>
       <p *ngIf="getTotalCount() === 0">
         🎯 Nenhuma tarefa adicionada ainda. Comece criando sua primeira tarefa!
       </p>
@@ -69,29 +102,64 @@
       </p>
     </div>
 
-    <div *ngFor="let task of getFilteredTasks()" class="task-item" [class.completed]="task.completed">
+    <div *ngFor="let task of getFilteredTasks(); trackBy: trackByTaskId" 
+         class="task-item slide-in"
+         [class.completed]="task.completed"
+         [attr.aria-label]="getTaskAriaLabel(task)"
+         role="listitem"
+         tabindex="0"
+         (touchstart)="onTouchStart($event, task.id)"
+         (touchmove)="onTouchMove($event, task.id)"
+         (touchend)="onTouchEnd($event, task.id)">
+      
       <div class="task-content">
         <div class="task-header">
-          <label class="task-checkbox">
+          <label class="task-checkbox" 
+                 [attr.aria-label]="'Marcar tarefa ' + task.title + ' como ' + (task.completed ? 'pendente' : 'concluída')">
             <input 
               type="checkbox" 
               [checked]="task.completed"
-              (change)="toggleTask(task.id)">
-            <span class="checkmark"></span>
+              [id]="'task-' + task.id"
+              (change)="toggleTask(task.id)"
+              [attr.aria-describedby]="'task-title-' + task.id">
+            <span class="checkmark" aria-hidden="true"></span>
           </label>
-          <h4 class="task-title" [class.strikethrough]="task.completed">{{ task.title }}</h4>
-          <button class="btn btn-danger btn-small" (click)="deleteTask(task.id)" title="Excluir tarefa">
+          
+          <h4 class="task-title" 
+              [id]="'task-title-' + task.id"
+              [class.strikethrough]="task.completed">
+            {{ task.title }}
+          </h4>
+          
+          <button class="btn btn-danger btn-small mobile-friendly-btn" 
+                  (click)="deleteTask(task.id)" 
+                  [attr.aria-label]="'Excluir tarefa ' + task.title"
+                  title="Excluir tarefa">
             🗑️
           </button>
         </div>
         
-        <p *ngIf="task.description" class="task-description" [class.strikethrough]="task.completed">
+        <p *ngIf="task.description" 
+           class="task-description" 
+           [class.strikethrough]="task.completed">
           {{ task.description }}
         </p>
         
         <div class="task-meta">
           <small class="task-date">Criada em: {{ task.createdAt | date:'dd/MM/yyyy HH:mm' }}</small>
-          <span *ngIf="task.completed" class="task-status completed-badge">✅ Concluída</span>
+          <span *ngIf="task.completed" 
+                class="task-status completed-badge"
+                aria-label="Tarefa concluída">
+            ✅ Concluída
+          </span>
+        </div>
+      </div>
+
+      <!-- Swipe hint for mobile -->
+      <div class="swipe-hint" aria-hidden="true">
+        <div class="swipe-actions">
+          <span class="swipe-action swipe-complete">👆 Completar</span>
+          <span class="swipe-action swipe-delete">🗑️ Excluir</span>
         </div>
       </div>
     </div>
