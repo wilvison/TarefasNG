@@ -1,6 +1,8 @@
 # TarefasNG - Sistema SaaS de Produtividade
 
-**TarefasNG** é um sistema avançado de gerenciamento de tarefas baseado na **Matriz de Eisenhower**, desenvolvido em Angular com funcionalidades de classificação automática, drag-and-drop e interface moderna.
+**Powered by NOVAG Tecnologia & Inovação**
+
+**TarefasNG** é um sistema avançado de gerenciamento de tarefas baseado na **Matriz de Eisenhower**, desenvolvido em Angular com funcionalidades de classificação automática, drag-and-drop e interface moderna com design profissional da NOVAG.
 
 ## 🚀 Características Principais
 
@@ -165,19 +167,30 @@ A aplicação está configurada para deploy automático na Azure Static Web Apps
 - [ ] Métricas de equipe
 - [ ] Insights de otimização
 
-## 🎨 Design System
+## 🎨 Design System - NOVAG Theme
+
+### Paleta de Cores NOVAG
+- **Primária**: `#1a365d` - Azul NOVAG (Headers e textos principais)
+- **Secundária**: `#00b4d8` - Azul claro NOVAG (Acentos e destaques)
+- **Gradiente**: `#1a365d` → `#2c5282` → `#3182ce` (Background principal)
 
 ### Cores dos Quadrantes
-- **Q1 (Fazer)**: `#e74c3c` - Vermelho (Urgência)
-- **Q2 (Planejar)**: `#27ae60` - Verde (Crescimento)
-- **Q3 (Delegar)**: `#f39c12` - Amarelo (Atenção)
-- **Q4 (Eliminar)**: `#95a5a6` - Cinza (Baixa prioridade)
+- **Q1 (Fazer)**: `#e63946` - Vermelho (Urgência)
+- **Q2 (Planejar)**: `#00b4d8` - Azul NOVAG (Crescimento)
+- **Q3 (Delegar)**: `#fb8500` - Laranja (Atenção)
+- **Q4 (Eliminar)**: `#6c757d` - Cinza (Baixa prioridade)
 
 ### Tipografia e Spacing
-- **Headers**: Sistema de gradients azul
-- **Cards**: Border radius 12px, shadow suave
+- **Font Family**: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+- **Headers**: Sistema de gradients azul NOVAG
+- **Cards**: Border radius 12px, shadow NOVAG
 - **Grid**: 20px gap, layout CSS Grid
 - **Responsivo**: Breakpoints em 768px e 480px
+
+### Elementos Visuais
+- **Logo**: NOVAG branding integrado ao header
+- **Buttons**: Gradientes azuis com hover effects
+- **Forms**: Bordas azuis com foco em #00b4d8
 
 ## 📄 Licença
 
@@ -186,3 +199,5 @@ Projeto desenvolvido para demonstração de implementação da Matriz de Eisenho
 ---
 
 **TarefasNG** - Transformando a gestão de tarefas com a metodologia comprovada de Stephen Covey.
+
+**Powered by NOVAG Tecnologia & Inovação** - Soluções tecnológicas inovadoras para o futuro.

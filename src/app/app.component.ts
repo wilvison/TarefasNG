@@ -6,7 +6,13 @@ import { Component } from '@angular/core';
     <div class="app-container">
       <header class="app-header">
         <div class="header-content">
-          <h1>{{ title }}</h1>
+          <div class="header-brand">
+            <img src="assets/logo.svg" alt="NOVAG Logo" class="logo">
+            <div class="brand-text">
+              <h1>{{ title }}</h1>
+              <span class="powered-by">Powered by NOVAG</span>
+            </div>
+          </div>
           <p class="subtitle">Sistema de Gerenciamento de Tarefas baseado na Matriz de Eisenhower</p>
           
           <nav class="main-nav">
@@ -62,6 +68,7 @@ import { Component } from '@angular/core';
       
       <footer class="app-footer">
         <p>&copy; 2024 TarefasNG - Sistema SaaS de Produtividade</p>
+        <p>Desenvolvido por <strong>NOVAG Tecnologia & Inovação</strong></p>
         <p>Transformando a gestão de tarefas com a Matriz de Eisenhower</p>
       </footer>
     </div>

@@ -2,21 +2,26 @@
   background: white;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 180, 216, 0.1);
+  border: 1px solid rgba(0, 180, 216, 0.1);
   margin-bottom: 30px;
 }
 
 .task-form-container h3 {
-  color: #2c3e50;
+  color: #1a365d;
   margin-top: 0;
   margin-bottom: 20px;
   font-size: 1.5rem;
+  background: linear-gradient(135deg, #1a365d, #00b4d8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .form-section {
   margin-bottom: 25px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .form-section:last-child {
@@ -25,7 +30,7 @@
 }
 
 .form-section h4 {
-  color: #34495e;
+  color: #1a365d;
   margin-bottom: 15px;
   font-size: 1.1rem;
   font-weight: 600;
@@ -39,14 +44,14 @@
   display: block;
   margin-bottom: 5px;
   font-weight: 600;
-  color: #495057;
+  color: #1a365d;
 }
 
 .form-control {
   width: 100%;
-  padding: 10px 12px;
-  border: 2px solid #e9ecef;
-  border-radius: 6px;
+  padding: 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
   font-size: 14px;
   transition: border-color 0.2s ease;
 }

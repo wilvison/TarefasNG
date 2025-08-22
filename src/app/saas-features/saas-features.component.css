@@ -7,12 +7,20 @@
 .saas-header {
   text-align: center;
   margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 180, 216, 0.1);
 }
 
 .saas-header h2 {
-  color: #2c3e50;
+  color: #1a365d;
   font-size: 2.5rem;
   margin-bottom: 10px;
+  background: linear-gradient(135deg, #1a365d, #00b4d8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .saas-nav {
@@ -20,7 +28,7 @@
   justify-content: center;
   gap: 10px;
   margin-bottom: 40px;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid #00b4d8;
   padding-bottom: 20px;
 }
 
@@ -31,18 +39,19 @@
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.2s ease;
-  color: #6c757d;
+  transition: all 0.3s ease;
+  color: #1a365d;
 }
 
 .nav-tab:hover {
-  background: #f8f9fa;
-  color: #495057;
+  background: #f0f9ff;
+  color: #00b4d8;
 }
 
 .nav-tab.active {
-  background: #3498db;
+  background: linear-gradient(135deg, #00b4d8, #0077b6);
   color: white;
+  box-shadow: 0 2px 8px rgba(0, 180, 216, 0.3);
 }
 
 /* Plans Section */

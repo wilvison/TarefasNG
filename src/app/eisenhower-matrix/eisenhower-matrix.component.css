@@ -7,12 +7,20 @@
 .matrix-header {
   text-align: center;
   margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 180, 216, 0.1);
 }
 
 .matrix-header h2 {
-  color: #2c3e50;
+  color: #1a365d;
   font-size: 2.5rem;
   margin-bottom: 10px;
+  background: linear-gradient(135deg, #1a365d, #00b4d8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .matrix-grid {
@@ -27,17 +35,30 @@
   background: white;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 180, 216, 0.1);
   border: 3px solid transparent;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
 }
 
-.q1-do { border-color: #e74c3c; }
-.q2-plan { border-color: #27ae60; }
-.q3-delegate { border-color: #f39c12; }
-.q4-eliminate { border-color: #95a5a6; }
+/* NOVAG Theme Quadrant Colors */
+.q1-do { 
+  border-color: #e63946; 
+  background: linear-gradient(135deg, #ffffff, #fff5f5);
+}
+.q2-plan { 
+  border-color: #00b4d8; 
+  background: linear-gradient(135deg, #ffffff, #f0f9ff);
+}
+.q3-delegate { 
+  border-color: #fb8500; 
+  background: linear-gradient(135deg, #ffffff, #fff7ed);
+}
+.q4-eliminate { 
+  border-color: #6c757d; 
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+}
 
 .quadrant-header {
   display: flex;
