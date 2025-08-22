@@ -69,6 +69,36 @@
   100% { transform: scale(1); background: white; }
 }
 
+/* Keyboard instructions */
+.keyboard-instructions {
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(41, 128, 185, 0.05));
+  border: 1px solid #3498db;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.keyboard-instructions h4 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.selected-task-info {
+  background: rgba(243, 156, 18, 0.1);
+  border: 1px solid #f39c12;
+  border-radius: 4px;
+  padding: 8px;
+  margin-top: 10px;
+  color: #e67e22;
+  font-weight: 500;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .q1-do { border-color: #e74c3c; }
 .q2-plan { border-color: #27ae60; }
 .q3-delegate { border-color: #f39c12; }
@@ -142,6 +172,18 @@
   background: linear-gradient(135deg, #3498db, #2980b9);
   color: white;
   border-color: #2980b9;
+}
+
+.matrix-task.selected {
+  outline: 3px solid #f39c12;
+  outline-offset: 2px;
+  background: linear-gradient(135deg, rgba(243, 156, 18, 0.1), rgba(230, 126, 34, 0.1));
+  border-color: #f39c12;
+}
+
+.matrix-task:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
 }
 
 .task-header {

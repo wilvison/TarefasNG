@@ -40,12 +40,17 @@
         <div 
           *ngFor="let task of getTasksForQuadrant(quadrant.key)" 
           class="matrix-task"
+          [class.selected]="isTaskSelected(task)"
           draggable="true"
+          tabindex="0"
+          role="button"
+          [attr.aria-label]="'Tarefa: ' + task.title + '. Pressione espaço para selecionar, depois use as teclas 1-4 para mover entre quadrantes'"
           (dragstart)="onDragStart($event, task)"
           (dragend)="onDragEnd()"
           (touchstart)="onTouchStart($event, task)"
           (touchmove)="onTouchMove($event)"
-          (touchend)="onTouchEnd($event)">
+          (touchend)="onTouchEnd($event)"
+          (keydown)="onKeyDown($event, task)">
           
           <div class="task-header">
             <label class="task-checkbox">
@@ -105,5 +110,17 @@
       <li><strong>Q4 (Eliminar):</strong> Tarefas nem urgentes nem importantes - considere eliminar</li>
     </ul>
     <p><em>💡 Dica: Arraste as tarefas entre os quadrantes para reorganizá-las!</em></p>
+    
+    <div class="keyboard-instructions" *ngIf="keyboardMode || selectedTask">
+      <h4>🎹 Instruções do Teclado:</h4>
+      <ul>
+        <li><strong>Espaço/Enter:</strong> Selecionar/deselecionar tarefa</li>
+        <li><strong>1, 2, 3, 4:</strong> Mover tarefa para Q1, Q2, Q3 ou Q4</li>
+        <li><strong>Escape:</strong> Cancelar seleção</li>
+      </ul>
+      <p *ngIf="selectedTask" class="selected-task-info">
+        📌 Tarefa selecionada: <strong>{{ selectedTask.title }}</strong>
+      </p>
+    </div>
   </div>
 </div>

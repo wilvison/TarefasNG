@@ -17,6 +17,10 @@ export class EisenhowerMatrixComponent implements OnInit {
   // Touch support properties
   private touchOffset = { x: 0, y: 0 };
   private touchDragElement: HTMLElement | null = null;
+  
+  // Keyboard accessibility
+  selectedTask: Task | null = null;
+  keyboardMode = false;
 
   constructor(private taskService: TaskService) { }
 
@@ -266,5 +270,49 @@ export class EisenhowerMatrixComponent implements OnInit {
     
     this.draggedTask = null;
     this.dragOverQuadrant = null;
+  }
+
+  // Keyboard accessibility methods
+  onKeyDown(event: KeyboardEvent, task: Task): void {
+    if (event.key === ' ' || event.key === 'Enter') {
+      event.preventDefault();
+      this.toggleKeyboardSelection(task);
+    } else if (event.key === 'Escape') {
+      this.clearKeyboardSelection();
+    } else if (this.selectedTask && ['1', '2', '3', '4'].includes(event.key)) {
+      event.preventDefault();
+      const quadrantMap: { [key: string]: EisenhowerQuadrant } = {
+        '1': EisenhowerQuadrant.Q1_DO,
+        '2': EisenhowerQuadrant.Q2_PLAN,
+        '3': EisenhowerQuadrant.Q3_DELEGATE,
+        '4': EisenhowerQuadrant.Q4_ELIMINATE
+      };
+      
+      const targetQuadrant = quadrantMap[event.key];
+      if (targetQuadrant && this.selectedTask.quadrant !== targetQuadrant) {
+        this.taskService.moveTaskToQuadrant(this.selectedTask.id, targetQuadrant);
+        this.loadTasks();
+        this.showDropSuccess(targetQuadrant);
+        this.clearKeyboardSelection();
+      }
+    }
+  }
+
+  private toggleKeyboardSelection(task: Task): void {
+    if (this.selectedTask === task) {
+      this.clearKeyboardSelection();
+    } else {
+      this.selectedTask = task;
+      this.keyboardMode = true;
+    }
+  }
+
+  private clearKeyboardSelection(): void {
+    this.selectedTask = null;
+    this.keyboardMode = false;
+  }
+
+  isTaskSelected(task: Task): boolean {
+    return this.selectedTask === task;
   }
 }
