@@ -12,6 +12,15 @@ export class EisenhowerMatrixComponent implements OnInit {
   tasks: Task[] = [];
   EisenhowerQuadrant = EisenhowerQuadrant; // Expose enum to template
   draggedTask: Task | null = null;
+  dragOverQuadrant: EisenhowerQuadrant | null = null;
+  
+  // Touch support properties
+  private touchOffset = { x: 0, y: 0 };
+  private touchDragElement: HTMLElement | null = null;
+  
+  // Keyboard accessibility
+  selectedTask: Task | null = null;
+  keyboardMode = false;
 
   constructor(private taskService: TaskService) { }
 
@@ -33,7 +42,18 @@ export class EisenhowerMatrixComponent implements OnInit {
     if (event.dataTransfer) {
       event.dataTransfer.setData('text/plain', task.id.toString());
       event.dataTransfer.effectAllowed = 'move';
+      
+      // Create a custom drag image
+      const dragElement = event.target as HTMLElement;
+      const rect = dragElement.getBoundingClientRect();
+      event.dataTransfer.setDragImage(dragElement, rect.width / 2, rect.height / 2);
     }
+    
+    // Add visual feedback
+    setTimeout(() => {
+      const taskElement = event.target as HTMLElement;
+      taskElement.classList.add('dragging');
+    }, 0);
   }
 
   onDragOver(event: DragEvent): void {
@@ -41,18 +61,59 @@ export class EisenhowerMatrixComponent implements OnInit {
     event.dataTransfer!.dropEffect = 'move';
   }
 
+  onDragEnter(event: DragEvent, quadrant: EisenhowerQuadrant): void {
+    event.preventDefault();
+    if (this.draggedTask) {
+      this.dragOverQuadrant = quadrant;
+    }
+  }
+
+  onDragLeave(event: DragEvent): void {
+    // Only clear if we're leaving the quadrant entirely
+    const target = event.target as HTMLElement;
+    const relatedTarget = event.relatedTarget as HTMLElement;
+    
+    if (!target.contains(relatedTarget)) {
+      this.dragOverQuadrant = null;
+    }
+  }
+
   onDrop(event: DragEvent, targetQuadrant: EisenhowerQuadrant): void {
     event.preventDefault();
     
     if (this.draggedTask) {
-      this.taskService.moveTaskToQuadrant(this.draggedTask.id, targetQuadrant);
-      this.loadTasks();
+      // Only move if dropping in a different quadrant
+      if (this.draggedTask.quadrant !== targetQuadrant) {
+        this.taskService.moveTaskToQuadrant(this.draggedTask.id, targetQuadrant);
+        this.loadTasks();
+        
+        // Add success feedback
+        this.showDropSuccess(targetQuadrant);
+      }
+      
       this.draggedTask = null;
+      this.dragOverQuadrant = null;
     }
   }
 
   onDragEnd(): void {
+    // Remove all visual feedback
+    const draggingElements = document.querySelectorAll('.dragging');
+    draggingElements.forEach(el => el.classList.remove('dragging'));
+    
     this.draggedTask = null;
+    this.dragOverQuadrant = null;
+  }
+
+  private showDropSuccess(quadrant: EisenhowerQuadrant): void {
+    // Visual feedback for successful drop
+    const quadrantElement = document.querySelector(`[data-quadrant="${quadrant}"]`);
+    if (quadrantElement) {
+      quadrantElement.classList.add('drop-success');
+      setTimeout(() => {
+        quadrantElement.classList.remove('drop-success');
+      }, 600);
+    }
   }
 
   toggleTask(id: number): void {
@@ -67,18 +128,30 @@ export class EisenhowerMatrixComponent implements OnInit {
 
   getQuadrantClass(quadrant: EisenhowerQuadrant): string {
     const baseClass = 'matrix-quadrant';
+    let classes = baseClass;
+    
+    // Add quadrant-specific class
     switch (quadrant) {
       case EisenhowerQuadrant.Q1_DO:
-        return `${baseClass} q1-do`;
+        classes += ' q1-do';
+        break;
       case EisenhowerQuadrant.Q2_PLAN:
-        return `${baseClass} q2-plan`;
+        classes += ' q2-plan';
+        break;
       case EisenhowerQuadrant.Q3_DELEGATE:
-        return `${baseClass} q3-delegate`;
+        classes += ' q3-delegate';
+        break;
       case EisenhowerQuadrant.Q4_ELIMINATE:
-        return `${baseClass} q4-eliminate`;
-      default:
-        return baseClass;
+        classes += ' q4-eliminate';
+        break;
     }
+    
+    // Add drag over class if applicable
+    if (this.dragOverQuadrant === quadrant) {
+      classes += ' drag-over';
+    }
+    
+    return classes;
   }
 
   getPriorityLabel(score: number): string {
@@ -97,5 +170,149 @@ export class EisenhowerMatrixComponent implements OnInit {
     if (diffDays === 0) return 'Hoje';
     if (diffDays === 1) return 'Amanhã';
     return `${diffDays} dias`;
+  }
+
+  // Touch support methods
+  onTouchStart(event: TouchEvent, task: Task): void {
+    if (event.touches.length !== 1) return;
+    
+    event.preventDefault();
+    this.draggedTask = task;
+    
+    const touch = event.touches[0];
+    const element = event.currentTarget as HTMLElement;
+    const rect = element.getBoundingClientRect();
+    
+    this.touchOffset = {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top
+    };
+    
+    // Create touch drag element
+    this.touchDragElement = element.cloneNode(true) as HTMLElement;
+    this.touchDragElement.style.position = 'fixed';
+    this.touchDragElement.style.zIndex = '9999';
+    this.touchDragElement.style.pointerEvents = 'none';
+    this.touchDragElement.style.opacity = '0.8';
+    this.touchDragElement.style.transform = 'rotate(5deg) scale(0.95)';
+    this.touchDragElement.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.3)';
+    
+    document.body.appendChild(this.touchDragElement);
+    
+    // Add visual feedback to original element
+    element.classList.add('dragging');
+    
+    this.updateTouchDragPosition(touch.clientX, touch.clientY);
+  }
+
+  onTouchMove(event: TouchEvent): void {
+    if (!this.draggedTask || !this.touchDragElement || event.touches.length !== 1) return;
+    
+    event.preventDefault();
+    const touch = event.touches[0];
+    
+    this.updateTouchDragPosition(touch.clientX, touch.clientY);
+    
+    // Check for drop zone
+    const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    const quadrantElement = elementBelow?.closest('[data-quadrant]');
+    
+    if (quadrantElement) {
+      const quadrantKey = quadrantElement.getAttribute('data-quadrant') as EisenhowerQuadrant;
+      if (quadrantKey && quadrantKey !== this.dragOverQuadrant) {
+        this.dragOverQuadrant = quadrantKey;
+      }
+    } else {
+      this.dragOverQuadrant = null;
+    }
+  }
+
+  onTouchEnd(event: TouchEvent): void {
+    if (!this.draggedTask) return;
+    
+    event.preventDefault();
+    
+    if (event.changedTouches.length === 1) {
+      const touch = event.changedTouches[0];
+      const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+      const quadrantElement = elementBelow?.closest('[data-quadrant]');
+      
+      if (quadrantElement) {
+        const targetQuadrant = quadrantElement.getAttribute('data-quadrant') as EisenhowerQuadrant;
+        if (targetQuadrant && this.draggedTask.quadrant !== targetQuadrant) {
+          this.taskService.moveTaskToQuadrant(this.draggedTask.id, targetQuadrant);
+          this.loadTasks();
+          this.showDropSuccess(targetQuadrant);
+        }
+      }
+    }
+    
+    this.cleanupTouchDrag();
+  }
+
+  private updateTouchDragPosition(clientX: number, clientY: number): void {
+    if (this.touchDragElement) {
+      this.touchDragElement.style.left = `${clientX - this.touchOffset.x}px`;
+      this.touchDragElement.style.top = `${clientY - this.touchOffset.y}px`;
+    }
+  }
+
+  private cleanupTouchDrag(): void {
+    // Remove visual feedback
+    const draggingElements = document.querySelectorAll('.dragging');
+    draggingElements.forEach(el => el.classList.remove('dragging'));
+    
+    // Remove touch drag element
+    if (this.touchDragElement) {
+      document.body.removeChild(this.touchDragElement);
+      this.touchDragElement = null;
+    }
+    
+    this.draggedTask = null;
+    this.dragOverQuadrant = null;
+  }
+
+  // Keyboard accessibility methods
+  onKeyDown(event: KeyboardEvent, task: Task): void {
+    if (event.key === ' ' || event.key === 'Enter') {
+      event.preventDefault();
+      this.toggleKeyboardSelection(task);
+    } else if (event.key === 'Escape') {
+      this.clearKeyboardSelection();
+    } else if (this.selectedTask && ['1', '2', '3', '4'].includes(event.key)) {
+      event.preventDefault();
+      const quadrantMap: { [key: string]: EisenhowerQuadrant } = {
+        '1': EisenhowerQuadrant.Q1_DO,
+        '2': EisenhowerQuadrant.Q2_PLAN,
+        '3': EisenhowerQuadrant.Q3_DELEGATE,
+        '4': EisenhowerQuadrant.Q4_ELIMINATE
+      };
+      
+      const targetQuadrant = quadrantMap[event.key];
+      if (targetQuadrant && this.selectedTask.quadrant !== targetQuadrant) {
+        this.taskService.moveTaskToQuadrant(this.selectedTask.id, targetQuadrant);
+        this.loadTasks();
+        this.showDropSuccess(targetQuadrant);
+        this.clearKeyboardSelection();
+      }
+    }
+  }
+
+  private toggleKeyboardSelection(task: Task): void {
+    if (this.selectedTask === task) {
+      this.clearKeyboardSelection();
+    } else {
+      this.selectedTask = task;
+      this.keyboardMode = true;
+    }
+  }
+
+  private clearKeyboardSelection(): void {
+    this.selectedTask = null;
+    this.keyboardMode = false;
+  }
+
+  isTaskSelected(task: Task): boolean {
+    return this.selectedTask === task;
   }
 }
