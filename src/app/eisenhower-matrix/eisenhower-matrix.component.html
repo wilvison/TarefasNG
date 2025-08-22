@@ -19,7 +19,10 @@
     <div 
       *ngFor="let quadrant of quadrants" 
       [class]="getQuadrantClass(quadrant.key)"
+      [attr.data-quadrant]="quadrant.key"
       (dragover)="onDragOver($event)"
+      (dragenter)="onDragEnter($event, quadrant.key)"
+      (dragleave)="onDragLeave($event)"
       (drop)="onDrop($event, quadrant.key)">
       
       <div class="quadrant-header">
@@ -39,7 +42,10 @@
           class="matrix-task"
           draggable="true"
           (dragstart)="onDragStart($event, task)"
-          (dragend)="onDragEnd()">
+          (dragend)="onDragEnd()"
+          (touchstart)="onTouchStart($event, task)"
+          (touchmove)="onTouchMove($event)"
+          (touchend)="onTouchEnd($event)">
           
           <div class="task-header">
             <label class="task-checkbox">
