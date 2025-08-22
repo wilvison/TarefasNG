@@ -31,7 +31,8 @@ export class TaskListComponent implements OnInit {
     setTimeout(() => {
       this.tasks = this.taskService.getTasks();
       this.isLoading = false;
-    }, 300);
+    this.tasks = this.taskService.getTasks();
+    this.isLoading = false;
   }
 
   addTask(): void {
