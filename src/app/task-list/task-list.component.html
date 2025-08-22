@@ -1,0 +1,99 @@
+<div class="task-manager">
+  <!-- Progress Stats -->
+  <div class="stats-card">
+    <h3>Progresso das Tarefas</h3>
+    <div class="progress-info">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="getCompletedPercentage()"></div>
+      </div>
+      <div class="progress-text">
+        {{ getCompletedCount() }} de {{ getTotalCount() }} tarefas concluídas ({{ getCompletedPercentage() }}%)
+      </div>
+    </div>
+  </div>
+
+  <!-- Add New Task -->
+  <div class="add-task-card">
+    <h3>Adicionar Nova Tarefa</h3>
+    <form (ngSubmit)="addTask()" #taskForm="ngForm">
+      <div class="form-group">
+        <label for="taskTitle">Título da Tarefa:</label>
+        <input 
+          type="text" 
+          id="taskTitle"
+          class="form-control" 
+          [(ngModel)]="newTaskTitle" 
+          name="taskTitle"
+          placeholder="Digite o título da tarefa..."
+          required>
+      </div>
+      
+      <div class="form-group">
+        <label for="taskDescription">Descrição (opcional):</label>
+        <textarea 
+          id="taskDescription"
+          class="form-control" 
+          [(ngModel)]="newTaskDescription" 
+          name="taskDescription"
+          placeholder="Digite uma descrição detalhada..."
+          rows="3"></textarea>
+      </div>
+      
+      <button type="submit" class="btn btn-primary" [disabled]="!newTaskTitle.trim()">
+        ➕ Adicionar Tarefa
+      </button>
+    </form>
+  </div>
+
+  <!-- Filter Options -->
+  <div class="filter-card">
+    <label class="filter-label">
+      <input 
+        type="checkbox" 
+        [(ngModel)]="showCompleted"
+        name="showCompleted">
+      Mostrar tarefas concluídas
+    </label>
+  </div>
+
+  <!-- Tasks List -->
+  <div class="tasks-container">
+    <h3>Suas Tarefas</h3>
+    
+    <div *ngIf="getFilteredTasks().length === 0" class="no-tasks">
+      <p *ngIf="getTotalCount() === 0">
+        🎯 Nenhuma tarefa adicionada ainda. Comece criando sua primeira tarefa!
+      </p>
+      <p *ngIf="getTotalCount() > 0 && !showCompleted">
+        ✅ Todas as tarefas foram concluídas! Parabéns!
+      </p>
+    </div>
+
+    <div *ngFor="let task of getFilteredTasks()" class="task-item" [class.completed]="task.completed">
+      <div class="task-content">
+        <div class="task-header">
+          <label class="task-checkbox">
+            <input 
+              type="checkbox" 
+              [checked]="task.completed"
+              (change)="toggleTask(task.id)">
+            <span class="checkmark"></span>
+          </label>
+          <h4 class="task-title" [class.strikethrough]="task.completed">{{ task.title }}</h4>
+          <button class="btn btn-danger btn-small" (click)="deleteTask(task.id)" title="Excluir tarefa">
+            🗑️
+          </button>
+        </div>
+        
+        <p *ngIf="task.description" class="task-description" [class.strikethrough]="task.completed">
+          {{ task.description }}
+        </p>
+        
+        <div class="task-meta">
+          <small class="task-date">Criada em: {{ task.createdAt | date:'dd/MM/yyyy HH:mm' }}</small>
+          <span *ngIf="task.completed" class="task-status completed-badge">✅ Concluída</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

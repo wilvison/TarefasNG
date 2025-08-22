@@ -1,0 +1,214 @@
+.task-manager {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.stats-card, .add-task-card, .filter-card, .tasks-container {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Progress Stats */
+.progress-info {
+  margin-top: 15px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background-color: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+  color: #495057;
+}
+
+/* Add Task Form */
+.add-task-card h3 {
+  color: #495057;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #495057;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Filter */
+.filter-card {
+  padding: 15px 20px;
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.filter-label input[type="checkbox"] {
+  transform: scale(1.2);
+}
+
+/* Tasks List */
+.no-tasks {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6c757d;
+  font-size: 16px;
+}
+
+.no-tasks p {
+  margin: 0;
+  font-size: 18px;
+}
+
+.task-item {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  margin: 15px 0;
+  padding: 15px;
+  transition: all 0.2s ease;
+  background: #fafafa;
+}
+
+.task-item:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+.task-item.completed {
+  background: #f8f9fa;
+  border-color: #28a745;
+}
+
+.task-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.task-checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-top: 2px;
+}
+
+.task-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.checkmark {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.task-checkbox input[type="checkbox"]:checked + .checkmark {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.task-checkbox input[type="checkbox"]:checked + .checkmark::after {
+  content: '✓';
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.task-title {
+  flex: 1;
+  margin: 0;
+  color: #495057;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.task-description {
+  margin: 10px 0;
+  color: #6c757d;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.task-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.task-date {
+  color: #adb5bd;
+  font-size: 12px;
+}
+
+.completed-badge {
+  background: #d4edda;
+  color: #155724;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.btn-small {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .task-manager {
+    padding: 0 10px;
+  }
+  
+  .stats-card, .add-task-card, .filter-card, .tasks-container {
+    margin: 15px 0;
+    padding: 15px;
+  }
+  
+  .task-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .task-title {
+    font-size: 16px;
+  }
+}
