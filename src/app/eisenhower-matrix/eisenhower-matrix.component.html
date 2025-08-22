@@ -1,0 +1,103 @@
+<div class="eisenhower-matrix">
+  <div class="matrix-header">
+    <h2>Matriz de Eisenhower</h2>
+    <p class="matrix-description">
+      Organize suas tarefas por urgência e importância para uma melhor produtividade
+    </p>
+  </div>
+
+  <div class="matrix-axes">
+    <div class="axis-label axis-vertical">
+      <span>IMPORTANTE</span>
+    </div>
+    <div class="axis-label axis-horizontal">
+      <span>URGENTE</span>
+    </div>
+  </div>
+
+  <div class="matrix-grid">
+    <div 
+      *ngFor="let quadrant of quadrants" 
+      [class]="getQuadrantClass(quadrant.key)"
+      (dragover)="onDragOver($event)"
+      (drop)="onDrop($event, quadrant.key)">
+      
+      <div class="quadrant-header">
+        <div class="quadrant-icon">{{ quadrant.icon }}</div>
+        <div class="quadrant-info">
+          <h3 class="quadrant-title">{{ quadrant.title }}</h3>
+          <p class="quadrant-description">{{ quadrant.description }}</p>
+        </div>
+        <div class="task-count">
+          {{ getTasksForQuadrant(quadrant.key).length }}
+        </div>
+      </div>
+
+      <div class="quadrant-tasks">
+        <div 
+          *ngFor="let task of getTasksForQuadrant(quadrant.key)" 
+          class="matrix-task"
+          draggable="true"
+          (dragstart)="onDragStart($event, task)"
+          (dragend)="onDragEnd()">
+          
+          <div class="task-header">
+            <label class="task-checkbox">
+              <input 
+                type="checkbox" 
+                [checked]="task.completed"
+                (change)="toggleTask(task.id)">
+              <span class="checkmark"></span>
+            </label>
+            <h4 class="task-title">{{ task.title }}</h4>
+            <button 
+              class="btn-delete" 
+              (click)="deleteTask(task.id)"
+              title="Excluir tarefa">
+              🗑️
+            </button>
+          </div>
+          
+          <p *ngIf="task.description" class="task-description">
+            {{ task.description }}
+          </p>
+          
+          <div class="task-meta">
+            <span class="priority-badge" [attr.data-priority]="getPriorityLabel(task.priority_score)">
+              Prioridade: {{ getPriorityLabel(task.priority_score) }}
+            </span>
+            <span *ngIf="task.due_date" class="due-date">
+              📅 {{ formatDueDate(task.due_date) }}
+            </span>
+          </div>
+          
+          <div *ngIf="task.labels.length > 0" class="task-labels">
+            <span *ngFor="let label of task.labels" class="task-label">
+              {{ label }}
+            </span>
+          </div>
+          
+          <div class="task-scores">
+            <span class="score-item">💪 Esforço: {{ task.effort_estimate }}/5</span>
+            <span class="score-item">🎯 Impacto: {{ task.impact_score }}/5</span>
+          </div>
+        </div>
+
+        <div *ngIf="getTasksForQuadrant(quadrant.key).length === 0" class="empty-quadrant">
+          <p>Arraste tarefas para este quadrante</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="matrix-instructions">
+    <h3>Como usar a Matriz de Eisenhower:</h3>
+    <ul>
+      <li><strong>Q1 (Fazer):</strong> Tarefas urgentes e importantes - faça imediatamente</li>
+      <li><strong>Q2 (Planejar):</strong> Tarefas importantes mas não urgentes - agende para fazer</li>
+      <li><strong>Q3 (Delegar):</strong> Tarefas urgentes mas não importantes - delegue se possível</li>
+      <li><strong>Q4 (Eliminar):</strong> Tarefas nem urgentes nem importantes - considere eliminar</li>
+    </ul>
+    <p><em>💡 Dica: Arraste as tarefas entre os quadrantes para reorganizá-las!</em></p>
+  </div>
+</div>

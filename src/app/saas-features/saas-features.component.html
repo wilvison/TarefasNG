@@ -1,0 +1,232 @@
+<div class="saas-container">
+  <div class="saas-header">
+    <h2>⚙️ Configurações SaaS</h2>
+    <p>Gerencie sua assinatura, organização e configurações</p>
+  </div>
+
+  <nav class="saas-nav">
+    <button 
+      [class.active]="currentView === 'plans'"
+      (click)="setView('plans')"
+      class="nav-tab">
+      💳 Planos
+    </button>
+    <button 
+      [class.active]="currentView === 'organization'"
+      (click)="setView('organization')"
+      class="nav-tab">
+      🏢 Organização
+    </button>
+    <button 
+      [class.active]="currentView === 'settings'"
+      (click)="setView('settings')"
+      class="nav-tab">
+      ⚙️ Configurações
+    </button>
+  </nav>
+
+  <!-- Subscription Plans View -->
+  <div *ngIf="currentView === 'plans'" class="plans-section">
+    <h3>Escolha o Plano Ideal</h3>
+    <div class="plans-grid">
+      <div 
+        *ngFor="let plan of subscriptionPlans" 
+        class="plan-card"
+        [class.highlighted]="plan.highlighted"
+        [class.current]="plan.current">
+        
+        <div class="plan-header">
+          <h4>{{ plan.name }}</h4>
+          <div class="plan-price">
+            <span class="price">{{ plan.price }}</span>
+            <span class="period">/mês</span>
+          </div>
+          <div *ngIf="plan.current" class="current-badge">Plano Atual</div>
+        </div>
+
+        <ul class="plan-features">
+          <li *ngFor="let feature of plan.features">
+            <span class="checkmark">✓</span>
+            {{ feature }}
+          </li>
+        </ul>
+
+        <button 
+          class="plan-button"
+          [class.upgrade]="!plan.current"
+          [disabled]="plan.current"
+          (click)="upgradePlan(plan.name)">
+          {{ plan.current ? 'Plano Atual' : 'Fazer Upgrade' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="billing-info">
+      <h4>💡 Informações de Cobrança</h4>
+      <ul>
+        <li>Cobrança mensal ou anual (desconto de 20%)</li>
+        <li>7 dias de teste grátis em todos os planos pagos</li>
+        <li>Cancele a qualquer momento</li>
+        <li>Suporte à Pix, cartão e boleto</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Organization View -->
+  <div *ngIf="currentView === 'organization'" class="org-section">
+    <h3>Gestão da Organização</h3>
+    
+    <div class="org-info">
+      <div class="org-card">
+        <h4>{{ organization.name }}</h4>
+        <div class="org-details">
+          <div class="detail-item">
+            <span class="label">Plano Atual:</span>
+            <span class="value">{{ organization.plan }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Membros:</span>
+            <span class="value">{{ organization.members }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="usage-card">
+        <h4>📊 Uso Atual</h4>
+        <div class="usage-items">
+          <div class="usage-item">
+            <span class="usage-label">Tarefas</span>
+            <div class="usage-bar">
+              <div class="usage-fill" style="width: 40%"></div>
+            </div>
+            <span class="usage-text">{{ organization.usage.tasks }}/10</span>
+          </div>
+          <div class="usage-item">
+            <span class="usage-label">Projetos</span>
+            <div class="usage-bar">
+              <div class="usage-fill" style="width: 100%"></div>
+            </div>
+            <span class="usage-text">{{ organization.usage.projects }}/1</span>
+          </div>
+          <div class="usage-item">
+            <span class="usage-label">Armazenamento</span>
+            <div class="usage-bar">
+              <div class="usage-fill" style="width: 2%"></div>
+            </div>
+            <span class="usage-text">{{ organization.usage.storage }}/10 MB</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="org-actions">
+      <button class="action-btn primary" (click)="inviteMember()">
+        👥 Convidar Membros
+      </button>
+      <button class="action-btn secondary" (click)="manageIntegrations()">
+        🔗 Gerenciar Integrações
+      </button>
+    </div>
+
+    <div class="members-section">
+      <h4>👥 Membros da Organização</h4>
+      <div class="members-list">
+        <div class="member-item">
+          <div class="member-avatar">👤</div>
+          <div class="member-info">
+            <div class="member-name">Você (Owner)</div>
+            <div class="member-email">seu.email@empresa.com</div>
+          </div>
+          <div class="member-role">Proprietário</div>
+        </div>
+        <div class="member-item">
+          <div class="member-avatar">👤</div>
+          <div class="member-info">
+            <div class="member-name">João Silva</div>
+            <div class="member-email">joao@empresa.com</div>
+          </div>
+          <div class="member-role">Membro</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings View -->
+  <div *ngIf="currentView === 'settings'" class="settings-section">
+    <h3>Configurações Gerais</h3>
+    
+    <div class="settings-groups">
+      <div class="setting-group">
+        <h4>🔔 Notificações</h4>
+        <div class="setting-item">
+          <label class="setting-label">
+            <input type="checkbox" checked>
+            <span class="checkmark"></span>
+            Email para novas tarefas
+          </label>
+        </div>
+        <div class="setting-item">
+          <label class="setting-label">
+            <input type="checkbox" checked>
+            <span class="checkmark"></span>
+            Lembretes de vencimento
+          </label>
+        </div>
+        <div class="setting-item">
+          <label class="setting-label">
+            <input type="checkbox">
+            <span class="checkmark"></span>
+            Relatórios semanais
+          </label>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <h4>🌍 Preferências</h4>
+        <div class="setting-item">
+          <label>Idioma:</label>
+          <select class="setting-select">
+            <option value="pt-BR" selected>Português (Brasil)</option>
+            <option value="en-US">English (US)</option>
+          </select>
+        </div>
+        <div class="setting-item">
+          <label>Fuso Horário:</label>
+          <select class="setting-select">
+            <option selected>America/Sao_Paulo</option>
+            <option>America/New_York</option>
+            <option>Europe/London</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <h4>🔐 Segurança</h4>
+        <div class="setting-item">
+          <button class="action-btn secondary">
+            🔑 Alterar Senha
+          </button>
+        </div>
+        <div class="setting-item">
+          <button class="action-btn secondary">
+            📱 Configurar 2FA
+          </button>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <h4>📊 Dados e Exportação</h4>
+        <div class="setting-item">
+          <button class="action-btn secondary">
+            📥 Exportar Dados
+          </button>
+        </div>
+        <div class="setting-item">
+          <button class="action-btn secondary">
+            🗄️ Backup Automático
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
