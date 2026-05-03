@@ -10,6 +10,20 @@
         {{ getCompletedCount() }} de {{ getTotalCount() }} tarefas concluídas ({{ getCompletedPercentage() }}%)
       </div>
     </div>
+    <div class="summary-metrics">
+      <div class="metric-item">
+        <span class="metric-value">{{ getTotalCount() }}</span>
+        <span class="metric-label">Total</span>
+      </div>
+      <div class="metric-item">
+        <span class="metric-value">{{ getPendingCount() }}</span>
+        <span class="metric-label">Pendentes</span>
+      </div>
+      <div class="metric-item">
+        <span class="metric-value">{{ getCompletedCount() }}</span>
+        <span class="metric-label">Concluídas</span>
+      </div>
+    </div>
   </div>
 
   <!-- Add New Task -->
@@ -38,6 +52,26 @@
           placeholder="Digite uma descrição detalhada..."
           rows="3"></textarea>
       </div>
+
+      <div class="quick-options">
+        <label class="checkbox-pill">
+          <input type="checkbox" [(ngModel)]="newTaskUrgent" name="newTaskUrgent">
+          <span>Urgente</span>
+        </label>
+        <label class="checkbox-pill">
+          <input type="checkbox" [(ngModel)]="newTaskImportant" name="newTaskImportant">
+          <span>Importante</span>
+        </label>
+        <div class="date-field">
+          <label for="taskDueDate">Vencimento</label>
+          <input
+            type="datetime-local"
+            id="taskDueDate"
+            class="form-control"
+            [(ngModel)]="newTaskDueDate"
+            name="taskDueDate">
+        </div>
+      </div>
       
       <button type="submit" class="btn btn-primary" [disabled]="!newTaskTitle.trim()">
         ➕ Adicionar Tarefa
@@ -47,13 +81,58 @@
 
   <!-- Filter Options -->
   <div class="filter-card">
-    <label class="filter-label">
-      <input 
-        type="checkbox" 
-        [(ngModel)]="showCompleted"
-        name="showCompleted">
-      Mostrar tarefas concluídas
-    </label>
+    <div class="filter-row">
+      <div class="search-field">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Buscar tarefas por título, descrição ou tag..."
+          [(ngModel)]="searchTerm"
+          name="searchTerm">
+      </div>
+      <div class="sort-field">
+        <label for="sortOption">Ordenar:</label>
+        <select id="sortOption" class="form-control" [(ngModel)]="sortOption" name="sortOption">
+          <option value="recent">Mais recentes</option>
+          <option value="oldest">Mais antigas</option>
+          <option value="title">Título (A-Z)</option>
+          <option value="priority">Prioridade</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filter-row filters-bottom">
+      <div class="quadrant-filters">
+        <button
+          type="button"
+          class="filter-pill"
+          [class.active]="selectedQuadrant === 'all'"
+          (click)="selectedQuadrant = 'all'">
+          Todas ({{ getTotalCount() }})
+        </button>
+        <button
+          *ngFor="let quadrant of quadrants"
+          type="button"
+          class="filter-pill"
+          [class.active]="selectedQuadrant === quadrant.key"
+          (click)="selectedQuadrant = quadrant.key">
+          {{ quadrant.title }} ({{ getQuadrantCount(quadrant.key) }})
+        </button>
+      </div>
+
+      <div class="filter-actions">
+        <label class="filter-label">
+          <input
+            type="checkbox"
+            [(ngModel)]="showCompleted"
+            name="showCompleted">
+          Mostrar tarefas concluídas
+        </label>
+        <button type="button" class="btn-clear" (click)="clearFilters()">
+          Limpar filtros
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Tasks List -->
@@ -88,6 +167,22 @@
         <p *ngIf="task.description" class="task-description" [class.strikethrough]="task.completed">
           {{ task.description }}
         </p>
+
+        <div class="task-badges">
+          <span class="badge quadrant" [attr.data-quadrant]="task.quadrant">
+            {{ getQuadrantLabel(task.quadrant) }}
+          </span>
+          <span class="badge priority" [attr.data-priority]="getPriorityKey(task.priority_score)">
+            Prioridade: {{ getPriorityLabel(task.priority_score) }}
+          </span>
+          <span *ngIf="task.due_date" class="badge due" [class.overdue]="isOverdue(task.due_date)">
+            📅 {{ formatDueDate(task.due_date) }}
+          </span>
+        </div>
+
+        <div *ngIf="task.labels.length > 0" class="task-labels">
+          <span *ngFor="let label of task.labels" class="task-label">#{{ label }}</span>
+        </div>
         
         <div class="task-meta">
           <small class="task-date">Criada em: {{ task.createdAt | date:'dd/MM/yyyy HH:mm' }}</small>

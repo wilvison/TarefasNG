@@ -69,3 +69,306 @@ body {
   border-color: #007bff;
   box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
 }
+
+/* Eisenhower matrix helpers */
+.eisenhower-matrix .matrix-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.eisenhower-matrix .search-field {
+  flex: 1;
+  min-width: 240px;
+}
+
+.eisenhower-matrix .search-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.eisenhower-matrix .search-input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.12);
+}
+
+.eisenhower-matrix .toggle-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.eisenhower-matrix .toggle-filter input {
+  width: 18px;
+  height: 18px;
+}
+
+.eisenhower-matrix .btn-clear {
+  border: none;
+  background: #f1f3f5;
+  color: #495057;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.eisenhower-matrix .btn-clear:hover:not(:disabled) {
+  background: #e9ecef;
+  transform: translateY(-1px);
+}
+
+.eisenhower-matrix .btn-clear:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.eisenhower-matrix .matrix-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.eisenhower-matrix .summary-item {
+  background: white;
+  border-radius: 12px;
+  padding: 12px 16px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.eisenhower-matrix .summary-value {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.eisenhower-matrix .summary-label {
+  font-size: 0.85rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 768px) {
+  .eisenhower-matrix .matrix-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .eisenhower-matrix .btn-clear {
+    width: 100%;
+  }
+}
+
+/* Task list helpers */
+.task-manager .summary-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.task-manager .metric-item {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+
+.task-manager .metric-value {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.task-manager .metric-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.task-manager .quick-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.task-manager .checkbox-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  font-weight: 600;
+}
+
+.task-manager .checkbox-pill input[type="checkbox"] {
+  transform: scale(1.1);
+}
+
+.task-manager .date-field label {
+  display: block;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 5px;
+}
+
+.task-manager .filter-row {
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  gap: 15px;
+  align-items: center;
+}
+
+.task-manager .filters-bottom {
+  margin-top: 15px;
+  grid-template-columns: 1fr;
+  gap: 15px;
+}
+
+.task-manager .search-field .form-control {
+  border-radius: 10px;
+}
+
+.task-manager .sort-field label {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.task-manager .quadrant-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.task-manager .filter-pill {
+  border: 1px solid #e9ecef;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #495057;
+  transition: all 0.2s ease;
+}
+
+.task-manager .filter-pill:hover {
+  border-color: #3498db;
+  color: #3498db;
+}
+
+.task-manager .filter-pill.active {
+  background: #3498db;
+  border-color: #3498db;
+  color: #fff;
+}
+
+.task-manager .filter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.task-manager .btn-clear {
+  border: none;
+  background: #f1f3f5;
+  color: #495057;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.task-manager .btn-clear:hover {
+  background: #e9ecef;
+}
+
+.task-manager .task-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.task-manager .badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #f1f3f5;
+  color: #495057;
+}
+
+.task-manager .badge.quadrant[data-quadrant="Q1_DO"] { background: rgba(231, 76, 60, 0.15); color: #c0392b; }
+.task-manager .badge.quadrant[data-quadrant="Q2_PLAN"] { background: rgba(39, 174, 96, 0.15); color: #1e8449; }
+.task-manager .badge.quadrant[data-quadrant="Q3_DELEGATE"] { background: rgba(243, 156, 18, 0.2); color: #b9770e; }
+.task-manager .badge.quadrant[data-quadrant="Q4_ELIMINATE"] { background: rgba(149, 165, 166, 0.2); color: #5f6a6a; }
+
+.task-manager .badge.priority[data-priority="critica"] { background: rgba(231, 76, 60, 0.18); color: #c0392b; }
+.task-manager .badge.priority[data-priority="alta"] { background: rgba(243, 156, 18, 0.2); color: #b9770e; }
+.task-manager .badge.priority[data-priority="media"] { background: rgba(52, 152, 219, 0.2); color: #2471a3; }
+.task-manager .badge.priority[data-priority="baixa"] { background: rgba(149, 165, 166, 0.2); color: #5f6a6a; }
+
+.task-manager .badge.due {
+  background: rgba(52, 152, 219, 0.15);
+  color: #2471a3;
+}
+
+.task-manager .badge.due.overdue {
+  background: rgba(231, 76, 60, 0.2);
+  color: #c0392b;
+}
+
+.task-manager .task-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.task-manager .task-label {
+  background: #eef2ff;
+  color: #4c51bf;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .task-manager .filter-row {
+    grid-template-columns: 1fr;
+  }
+
+  .task-manager .filter-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
