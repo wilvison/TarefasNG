@@ -19,6 +19,12 @@ export class TaskListComponent implements OnInit {
   sortOption: 'recent' | 'oldest' | 'title' | 'priority' = 'recent';
   selectedQuadrant: EisenhowerQuadrant | 'all' = 'all';
   quadrants: QuadrantInfo[] = [];
+  readonly priorityLevels = [
+    { minScore: 5, key: 'critica', label: 'Crítica' },
+    { minScore: 3, key: 'alta', label: 'Alta' },
+    { minScore: 1, key: 'media', label: 'Média' },
+    { minScore: Number.NEGATIVE_INFINITY, key: 'baixa', label: 'Baixa' }
+  ];
 
   constructor(private taskService: TaskService) { }
 
@@ -131,17 +137,15 @@ export class TaskListComponent implements OnInit {
   }
 
   getPriorityLabel(score: number): string {
-    if (score >= 5) return 'Crítica';
-    if (score >= 3) return 'Alta';
-    if (score >= 1) return 'Média';
-    return 'Baixa';
+    return this.getPriorityInfo(score).label;
   }
 
   getPriorityKey(score: number): string {
-    if (score >= 5) return 'critica';
-    if (score >= 3) return 'alta';
-    if (score >= 1) return 'media';
-    return 'baixa';
+    return this.getPriorityInfo(score).key;
+  }
+
+  private getPriorityInfo(score: number): { key: string; label: string } {
+    return this.priorityLevels.find(level => score >= level.minScore) ?? this.priorityLevels[3];
   }
 
   formatDueDate(date?: Date): string {
