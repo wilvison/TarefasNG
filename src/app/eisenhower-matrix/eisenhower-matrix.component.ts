@@ -43,7 +43,7 @@ export class EisenhowerMatrixComponent implements OnInit {
   }
 
   getVisibleTaskCount(): number {
-    return this.tasks.filter(task => this.showCompleted || !task.completed).filter(task => this.matchesSearch(task)).length;
+    return this.tasks.filter(task => (this.showCompleted || !task.completed) && this.matchesSearch(task)).length;
   }
 
   getCompletedTaskCount(): number {

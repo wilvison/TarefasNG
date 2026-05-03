@@ -23,7 +23,7 @@ export class TaskListComponent implements OnInit {
     { minScore: 5, key: 'critica', label: 'Crítica' },
     { minScore: 3, key: 'alta', label: 'Alta' },
     { minScore: 1, key: 'media', label: 'Média' },
-    { minScore: Number.NEGATIVE_INFINITY, key: 'baixa', label: 'Baixa' }
+    { minScore: -Infinity, key: 'baixa', label: 'Baixa' }
   ];
 
   constructor(private taskService: TaskService) { }
@@ -145,7 +145,8 @@ export class TaskListComponent implements OnInit {
   }
 
   private getPriorityInfo(score: number): { key: string; label: string } {
-    return this.priorityLevels.find(level => score >= level.minScore) ?? this.priorityLevels[3];
+    return this.priorityLevels.find(level => score >= level.minScore) ??
+      this.priorityLevels[this.priorityLevels.length - 1];
   }
 
   formatDueDate(date?: Date): string {
