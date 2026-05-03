@@ -39,7 +39,7 @@ export class TaskListComponent implements OnInit {
 
   addTask(): void {
     if (this.newTaskTitle.trim()) {
-      const dueDate = this.newTaskDueDate ? new Date(this.newTaskDueDate) : undefined;
+      const dueDate = this.parseDueDate(this.newTaskDueDate);
       this.taskService.addTask(
         this.newTaskTitle.trim(),
         this.newTaskDescription.trim(),
@@ -154,8 +154,8 @@ export class TaskListComponent implements OnInit {
     const now = new Date();
     const diffDays = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
     if (diffDays < 0) {
-      const absDays = Math.abs(diffDays);
-      return `Atrasado ${absDays} ${absDays === 1 ? 'dia' : 'dias'}`;
+      const daysOverdue = Math.abs(diffDays);
+      return `Atrasado ${daysOverdue} ${daysOverdue === 1 ? 'dia' : 'dias'}`;
     }
     if (diffDays === 0) return 'Hoje';
     if (diffDays === 1) return 'Amanhã';
@@ -165,5 +165,11 @@ export class TaskListComponent implements OnInit {
   isOverdue(date?: Date): boolean {
     if (!date) return false;
     return date.getTime() < Date.now();
+  }
+
+  private parseDueDate(value: string): Date | undefined {
+    if (!value) return undefined;
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? undefined : parsed;
   }
 }
