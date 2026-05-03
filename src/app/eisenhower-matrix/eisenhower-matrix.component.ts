@@ -13,6 +13,8 @@ export class EisenhowerMatrixComponent implements OnInit {
   EisenhowerQuadrant = EisenhowerQuadrant; // Expose enum to template
   draggedTask: Task | null = null;
   dragOverQuadrant: EisenhowerQuadrant | null = null;
+  searchQuery = '';
+  showCompleted = false;
   
   // Touch support properties
   private touchOffset = { x: 0, y: 0 };
@@ -34,7 +36,35 @@ export class EisenhowerMatrixComponent implements OnInit {
   }
 
   getTasksForQuadrant(quadrant: EisenhowerQuadrant): Task[] {
-    return this.taskService.getTasksByQuadrant(quadrant).filter(task => !task.completed);
+    return this.tasks
+      .filter(task => task.quadrant === quadrant)
+      .filter(task => this.showCompleted || !task.completed)
+      .filter(task => this.matchesSearch(task));
+  }
+
+  getVisibleTaskCount(): number {
+    return this.tasks.filter(task => (this.showCompleted || !task.completed) && this.matchesSearch(task)).length;
+  }
+
+  getCompletedTaskCount(): number {
+    return this.tasks.filter(task => task.completed).length;
+  }
+
+  getTotalTaskCount(): number {
+    return this.tasks.length;
+  }
+
+  clearFilters(): void {
+    this.searchQuery = '';
+    this.showCompleted = false;
+  }
+
+  private matchesSearch(task: Task): boolean {
+    const query = this.searchQuery.trim().toLowerCase();
+    if (!query) return true;
+    return [task.title, task.description, ...(task.labels || [])]
+      .filter(Boolean)
+      .some(value => value.toLowerCase().includes(query));
   }
 
   onDragStart(event: DragEvent, task: Task): void {

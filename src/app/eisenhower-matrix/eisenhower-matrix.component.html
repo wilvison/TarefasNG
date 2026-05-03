@@ -6,6 +6,38 @@
     </p>
   </div>
 
+  <div class="matrix-toolbar">
+    <div class="search-field">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Buscar tarefas por título, descrição ou etiquetas..."
+        [(ngModel)]="searchQuery">
+    </div>
+    <label class="toggle-filter">
+      <input type="checkbox" [(ngModel)]="showCompleted">
+      <span class="toggle-label">Mostrar concluídas</span>
+    </label>
+    <button class="btn-clear" (click)="clearFilters()" [disabled]="!searchQuery && !showCompleted">
+      Limpar filtros
+    </button>
+  </div>
+
+  <div class="matrix-summary">
+    <div class="summary-item">
+      <span class="summary-value">{{ getTotalTaskCount() }}</span>
+      <span class="summary-label">Total</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-value">{{ getVisibleTaskCount() }}</span>
+      <span class="summary-label">Visíveis</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-value">{{ getCompletedTaskCount() }}</span>
+      <span class="summary-label">Concluídas</span>
+    </div>
+  </div>
+
   <div class="matrix-axes">
     <div class="axis-label axis-vertical">
       <span>IMPORTANTE</span>
