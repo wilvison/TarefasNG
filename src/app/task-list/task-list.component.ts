@@ -159,7 +159,7 @@ export class TaskListComponent implements OnInit {
     }
     if (diffDays === 0) return 'Hoje';
     if (diffDays === 1) return 'Amanhã';
-    return `${diffDays} ${diffDays === 1 ? 'dia' : 'dias'}`;
+    return `${diffDays} dias`;
   }
 
   isOverdue(date?: Date): boolean {
