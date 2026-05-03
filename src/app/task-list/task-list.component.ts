@@ -153,10 +153,13 @@ export class TaskListComponent implements OnInit {
     if (!date) return '';
     const now = new Date();
     const diffDays = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays < 0) return `Atrasado ${Math.abs(diffDays)} dias`;
+    if (diffDays < 0) {
+      const absDays = Math.abs(diffDays);
+      return `Atrasado ${absDays} ${absDays === 1 ? 'dia' : 'dias'}`;
+    }
     if (diffDays === 0) return 'Hoje';
     if (diffDays === 1) return 'Amanhã';
-    return `${diffDays} dias`;
+    return `${diffDays} ${diffDays === 1 ? 'dia' : 'dias'}`;
   }
 
   isOverdue(date?: Date): boolean {
